@@ -51,29 +51,32 @@ if 'manual_date_input' not in st.session_state:
 if st.session_state.role == "user":
     # واجهة المستخدم
     st.subheader("Add Worker")
-    
+
     # إدخال التاريخ
     manual_date = st.text_input("Enter Date", st.session_state.manual_date_input)
     st.session_state.manual_date_input = manual_date
     
     # إدخال باقي البيانات
     name = st.text_input("Name", st.session_state.name_input)
-    value = st.text_input("Enter the total :", st.session_state.value_input)
+    value = st.text_input("Enter the total:", st.session_state.value_input)
     withdrawn = st.text_input("Enter the withdrawn:", st.session_state.withdrawn_input)
     due_optional = st.text_input("Enter custom Due (optional):", st.session_state.due_input)
     is_cf = st.checkbox("CF")
 
+    # التعامل مع إضافة البيانات
     if st.button("OK"):
         if manual_date and name and value:
             try:
+                # تحويل المدخلات إلى قيم صحيحة
                 value_f = float(value)
                 withdrawn_f = float(withdrawn) if withdrawn else 0
                 due_custom = float(due_optional) if due_optional else None
 
+                # بناء البيانات وإضافتها إلى قائمة العمال
                 if is_cf:
                     data = {
                         "Worker": name,
-                        "Total": clean_number(value_f),
+                        "Total": value_f,
                         "Due": "",
                         "Withdrawn": "",
                         "Remaining": "",
@@ -106,17 +109,17 @@ if st.session_state.role == "user":
 
                     data = {
                         "Worker": name,
-                        "Total": clean_number(value_f),
-                        "Due": clean_number(fee),
-                        "Withdrawn": clean_number(withdrawn_f),
-                        "Remaining": clean_number(final_amount),
+                        "Total": value_f,
+                        "Due": fee,
+                        "Withdrawn": withdrawn_f,
+                        "Remaining": final_amount,
                         "Received": False
                     }
 
                 st.session_state.workers.append(data)
                 st.session_state.received_status[name] = False
 
-                # Clear inputs
+                # Clear inputs after adding
                 st.session_state.name_input = ""
                 st.session_state.value_input = ""
                 st.session_state.withdrawn_input = ""
@@ -152,9 +155,9 @@ if st.session_state.role == "user":
         ])
         for_cleanfoam = total_sum - for_workera
 
-        st.markdown(f"### Total: **{clean_number(total_sum)}**")
-        st.markdown(f"**For workera:** {clean_number(for_workera)}")
-        st.markdown(f"**For CleanFoam:** {clean_number(for_cleanfoam)}")
+        st.markdown(f"### Total: **{total_sum}**")
+        st.markdown(f"**For workera:** {for_workera}")
+        st.markdown(f"**For CleanFoam:** {for_cleanfoam}")
 
         # إرسال البيانات
         st.markdown("### إرسال البيانات")
