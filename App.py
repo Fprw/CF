@@ -14,12 +14,12 @@ user_credentials = {
     "admin": "CF3010"  # كلمة مرور المشرف
 }
 
-# اختيار الدور عبر واجهة تسجيل الدخول
+# واجهة تسجيل الدخول في الشريط الجانبي
 st.sidebar.subheader("Login")
 
 role = st.sidebar.radio("Select Role", ["user", "admin"])
 
-# تحديد كلمة المرور
+# إدخال كلمة المرور
 password = st.sidebar.text_input("Enter Password", type="password")
 
 # التحقق من كلمة المرور
@@ -31,31 +31,7 @@ else:
     st.session_state.role = None
     st.error("Invalid credentials")
 
-# Session state init
-if 'workers' not in st.session_state:
-    st.session_state.workers = []
-if 'received_status' not in st.session_state:
-    st.session_state.received_status = {}
-if 'name_input' not in st.session_state:
-    st.session_state.name_input = ""
-if 'value_input' not in st.session_state:
-    st.session_state.value_input = ""
-if 'withdrawn_input' not in st.session_state:
-    st.session_state.withdrawn_input = ""
-if 'due_input' not in st.session_state:
-    st.session_state.due_input = ""
-if 'manual_date_input' not in st.session_state:
-    st.session_state.manual_date_input = ""
-
-# دالة تنظيف الأرقام
-def clean_number(n):
-    return int(n) if n == int(n) else n
-
-# إدخال التاريخ
-st.subheader("Today's Date")
-manual_date = st.text_input("Date", st.session_state.manual_date_input)
-st.session_state.manual_date_input = manual_date
-
+# الآن سنعرض المحتوى بناءً على الدور الذي تم تحديده:
 if st.session_state.role == "user":
     # واجهة المستخدم
     st.subheader("Add Worker")
