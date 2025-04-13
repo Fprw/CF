@@ -51,6 +51,12 @@ if 'manual_date_input' not in st.session_state:
 if st.session_state.role == "user":
     # واجهة المستخدم
     st.subheader("Add Worker")
+    
+    # إدخال التاريخ
+    manual_date = st.text_input("Enter Date", st.session_state.manual_date_input)
+    st.session_state.manual_date_input = manual_date
+    
+    # إدخال باقي البيانات
     name = st.text_input("Name", st.session_state.name_input)
     value = st.text_input("Enter the total :", st.session_state.value_input)
     withdrawn = st.text_input("Enter the withdrawn:", st.session_state.withdrawn_input)
