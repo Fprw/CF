@@ -53,6 +53,10 @@ else:
         due_optional = st.text_input("المبلغ المستحق (اختياري):")
         is_cf = st.checkbox("CF")
 
+        # تهيئة received_status
+        if 'received_status' not in st.session_state:
+            st.session_state.received_status = {}
+
         if st.button("OK"):
             if manual_date and name and value:
                 try:
