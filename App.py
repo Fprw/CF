@@ -8,6 +8,19 @@ import os
 st.set_page_config(page_title="CleanFoam", page_icon="✅")
 st.title("CleanFoam")
 
+# تحديد دور المستخدم
+if 'role' not in st.session_state:
+    st.session_state.role = "user"  # القيمة الافتراضية للمستخدم العادي
+
+# اختيار دور المستخدم
+st.sidebar.subheader("Choose your role")
+role = st.sidebar.radio("Select Role", ["user", "admin"])
+
+# تغيير الدور عند الاختيار
+if role != st.session_state.role:
+    st.session_state.role = role
+    st.experimental_rerun()
+
 # Session state init
 if 'workers' not in st.session_state:
     st.session_state.workers = []
@@ -23,8 +36,6 @@ if 'due_input' not in st.session_state:
     st.session_state.due_input = ""
 if 'manual_date_input' not in st.session_state:
     st.session_state.manual_date_input = ""
-if 'role' not in st.session_state:
-    st.session_state.role = "user"  # By default, user is logged in
 
 # دالة تنظيف الأرقام
 def clean_number(n):
