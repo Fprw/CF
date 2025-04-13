@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import base64
 import json
 import os
 
@@ -76,7 +75,7 @@ if st.session_state.role == "user":
                 if is_cf:
                     data = {
                         "Worker": name,
-                        "Total": value_f,
+                        "Total": int(value_f),  # عرض الرقم كعدد صحيح
                         "Due": "",
                         "Withdrawn": "",
                         "Remaining": "",
@@ -109,10 +108,10 @@ if st.session_state.role == "user":
 
                     data = {
                         "Worker": name,
-                        "Total": value_f,
-                        "Due": fee,
-                        "Withdrawn": withdrawn_f,
-                        "Remaining": final_amount,
+                        "Total": int(value_f),  # عرض الرقم كعدد صحيح
+                        "Due": int(fee),        # عرض الرقم كعدد صحيح
+                        "Withdrawn": int(withdrawn_f),  # عرض الرقم كعدد صحيح
+                        "Remaining": int(final_amount),  # عرض الرقم كعدد صحيح
                         "Received": False
                     }
 
@@ -159,15 +158,25 @@ if st.session_state.role == "user":
         st.markdown(f"**For workera:** {for_workera}")
         st.markdown(f"**For CleanFoam:** {for_cleanfoam}")
 
-        # إرسال البيانات
-        st.markdown("### إرسال البيانات")
-        if st.button("إرسال"):
+        # إضافة خيار الحذف
+        st.markdown("### Delete Worker")
+        worker_names = [w['Worker'] for w in st.session_state.workers]
+        selected_worker = st.selectbox("Select worker to delete", worker_names)
+
+        if st.button("Delete"):
+            st.session_state.workers = [w for w in st.session_state.workers if w['Worker'] != selected_worker]
+            st.success(f"Worker '{selected_worker}' has been deleted.")
+            st.rerun()
+
+        # حفظ البيانات بدلاً من الإرسال
+        st.markdown("### Save Data")
+        if st.button("Save"):
             folder = "submissions"
             os.makedirs(folder, exist_ok=True)
             filepath = os.path.join(folder, f"{manual_date}.json")
             with open(filepath, "w") as f:
                 json.dump(st.session_state.workers, f, indent=2)
-            st.success(f"تم إرسال البيانات باسم {manual_date}")
+            st.success(f"Data saved under {manual_date}.")
 
 else:
     # واجهة المشرف
@@ -180,16 +189,16 @@ else:
         files = [f for f in os.listdir(folder) if f.endswith(".json")]
 
         if not files:
-            st.info("لا توجد بيانات مرسلة بعد.")
+            st.info("No data submitted yet.")
         else:
-            selected_file = st.selectbox("اختر التاريخ", files)
+            selected_file = st.selectbox("Select Date", files)
             filepath = os.path.join(folder, selected_file)
 
             with open(filepath, "r") as f:
                 data = json.load(f)
 
             df = pd.DataFrame(data)
-            st.markdown(f"### البيانات من: **{selected_file.replace('.json', '')}**")
+            st.markdown(f"### Data from: **{selected_file.replace('.json', '')}**")
 
             for i in range(len(df)):
                 received_key = f"received_{i}"
@@ -197,9 +206,9 @@ else:
                     f"Received: {df.at[i, 'Worker']}", value=df.at[i]["Received"], key=received_key
                 )
 
-            if st.button("حفظ"):
+            if st.button("Save Changes"):
                 with open(filepath, "w") as f:
                     json.dump(df.to_dict(orient="records"), f, indent=2)
-                st.success("تم الحفظ بنجاح.")
+                st.success("Changes saved successfully.")
 
             st.dataframe(df, use_container_width=True)
