@@ -32,6 +32,10 @@ if "logged_in" not in st.session_state:
 if not st.session_state.logged_in:
     login()
 else:
+    # تهيئة البيانات إذا لم تكن موجودة في الحالة
+    if 'workers' not in st.session_state:
+        st.session_state.workers = []
+    
     # إذا كان المستخدم قد سجل الدخول
     if st.session_state.user_type == "مستخدم":
         # واجهة المستخدم
@@ -39,8 +43,6 @@ else:
         
         # إضافة البيانات
         st.subheader("إضافة عامل")
-        if 'workers' not in st.session_state:
-            st.session_state.workers = []
         if 'manual_date_input' not in st.session_state:
             st.session_state.manual_date_input = ""
 
@@ -122,7 +124,10 @@ else:
         # واجهة المشرف
         st.title("واجهة المشرف")
 
-        # عرض جميع البيانات
+        # تأكد من تهيئة البيانات في حالة عدم وجودها
+        if 'workers' not in st.session_state:
+            st.session_state.workers = []
+
         if st.session_state.workers:
             display_df = pd.DataFrame(st.session_state.workers)
 
