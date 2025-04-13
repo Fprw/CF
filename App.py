@@ -31,6 +31,22 @@ else:
     st.session_state.role = None
     st.error("Invalid credentials")
 
+# تهيئة المتغيرات في session_state إذا لم تكن موجودة
+if 'workers' not in st.session_state:
+    st.session_state.workers = []
+if 'received_status' not in st.session_state:
+    st.session_state.received_status = {}
+if 'name_input' not in st.session_state:
+    st.session_state.name_input = ""
+if 'value_input' not in st.session_state:
+    st.session_state.value_input = ""
+if 'withdrawn_input' not in st.session_state:
+    st.session_state.withdrawn_input = ""
+if 'due_input' not in st.session_state:
+    st.session_state.due_input = ""
+if 'manual_date_input' not in st.session_state:
+    st.session_state.manual_date_input = ""
+
 # الآن سنعرض المحتوى بناءً على الدور الذي تم تحديده:
 if st.session_state.role == "user":
     # واجهة المستخدم
